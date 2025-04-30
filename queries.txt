@@ -1,9 +1,9 @@
 1. Seleziona gli utenti che hanno postato almeno un video 
-SELECT `users`.`email` AS `User`, `medias`.`type`, `medias`.`created_at` AS `Date`
-FROM `medias`
-INNER JOIN `users`
-ON `medias`.`user_id` = `users`.`id`
-WHERE `type` = "video";
+SELECT DISTINCT `users`.`username`, `users`.`email`, `users`.`password`, `medias`.`type`
+FROM users
+INNER JOIN `medias`
+ON `users`.`id` = `medias`.`user_id`
+WHERE `medias`.`type` = "video"
 
 2. Seleziona tutti i post senza Like (13)
 SELECT COUNT(*) 
