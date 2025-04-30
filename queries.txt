@@ -6,26 +6,33 @@ ON `users`.`id` = `medias`.`user_id`
 WHERE `medias`.`type` = "video"
 
 2. Seleziona tutti i post senza Like (13)
-SELECT COUNT(*) 
+
+SELECT `posts`.*
 FROM `posts`
 LEFT JOIN `likes`
 ON `posts`.`id` = `likes`.`post_id`
 WHERE `likes`.`post_id` IS NULL;
 
-3.Conta il numero di like per ogni post (165 nel caso di query con SELECT + JOIN oppure 175 nel caso di query con sola SELECT)
-SELECT COUNT(DISTINCT `post_id`) 
-FROM `likes`;
+-- 3.Conta il numero di like per ogni post (165 nel caso di query con SELECT 
+-- + JOIN oppure 175 nel caso di query con sola SELECT)
+
+SELECT `posts`.* , COUNT(*)
+FROM `likes` INNER JOIN `posts`
+ON `likes`.`post_id` = `posts`.`id`
+GROUP BY `post_id`
+
 
 
 4.Ordina gli utenti per il numero di media caricati (25)
+
 SELECT `users`.`id`, `users`.`username`, `users`.`email`, COUNT(`medias`.`path`) AS `total_medias`
 FROM `users`
 INNER JOIN `medias`
 ON `users`.`id` = `medias`.`user_id`
 GROUP BY `users`.`id`, `users`.`username`, `users`.`email`
 ORDER BY COUNT(`medias`.`path`) DESC;
-
-5.Ordina gli utenti per totale di likes ricevuti nei loro posts (25) 
+    
+-- 5.Ordina gli utenti per totale di likes ricevuti nei loro posts (25) 
 
 SELECT `users`.`id`, `users`.`username`,COUNT(`likes`.`post_id`) AS `total_likes`
 FROM `users` 
@@ -33,6 +40,5 @@ INNER JOIN `posts`
 ON `users`.`id` = `posts`.`user_id` 
 INNER JOIN `likes`
 ON `posts`.`id` = `likes`.`post_id`
-WHERE `likes`.`date` IS NOT NULL
-GROUP BY `users`.`id`, `users`.`username`
+GROUP BY `users`.`id`
 ORDER BY `total_likes` DESC;
